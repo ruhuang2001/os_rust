@@ -10,7 +10,6 @@ fn panic(_info: &PanicInfo) -> ! {
 }
 
 #[no_mangle]
-
 pub extern "C" fn _start() -> ! {
     // let vga_buffer = 0xb8000 as *mut u8;
 
@@ -28,6 +27,6 @@ pub extern "C" fn _start() -> ! {
     // write!(vga_buffer::WRITER.lock(), ",some numbers: {} {}", 42, 12.42).unwrap();
 
     println!("Hello World{}", "!");
-    panic!("Some panic message");
+    loop{}
 
 }
