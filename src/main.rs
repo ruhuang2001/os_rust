@@ -27,22 +27,6 @@ fn trivial_assertion() {
 }
 
 
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    println!("{}",_info);
-    loop {}
-}
-
-#[cfg(test)]
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
-    serial_println!("[Failed]\n");
-    serial_println!("Error: {}",_info);
-    exit_qemu(QemuExitCode::Failed);
-    loop {}
-}
-
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     // let vga_buffer = 0xb8000 as *mut u8;
@@ -82,4 +66,17 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         let mut port = Port::new(0xf4);
         port.write(exit_code as u32);
     }
+}
+
+#[cfg(test)]
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    os_rust::test_panic_handler(_info)
+}
+
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    println!("{}",_info);
+    loop {}
 }
