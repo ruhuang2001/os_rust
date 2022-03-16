@@ -7,6 +7,37 @@ use core::panic::PanicInfo;
 mod vga_buffer;
 mod serial;
 
+#[no_mangle]
+pub extern "C" fn _start() -> ! {
+    // let vga_buffer = 0xb8000 as *mut u8;
+
+    // for (i, &byte) in HELLO.iter().enumerate() {
+    //     unsafe {
+    //         *vga_buffer.offset(i as isize * 2) = byte;
+    //         *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
+    //     }
+    // }
+    
+    // vga_buffer::print_something();
+    
+    // use core::fmt::Write;
+    // vga_buffer::WRITER.lock().write_str("HELLO RUHUANG").unwrap();
+    // write!(vga_buffer::WRITER.lock(), ",some numbers: {} {}", 42, 12.42).unwrap();
+
+    println!("Hello World{}", "!");
+    os_rust::init();
+
+    x86_64::instructions::interrupts::int3();
+
+
+    #[cfg(test)]
+    test_main();
+
+    println!("It did not crash");
+    loop{}
+
+}
+
 #[cfg(test)]
 fn test_runner(tests: &[&dyn Fn()]) {
     serial_println!("Running {} tests", tests.len());
@@ -26,30 +57,6 @@ fn trivial_assertion() {
     serial_println!("[ok]");    
 }
 
-
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    // let vga_buffer = 0xb8000 as *mut u8;
-
-    // for (i, &byte) in HELLO.iter().enumerate() {
-    //     unsafe {
-    //         *vga_buffer.offset(i as isize * 2) = byte;
-    //         *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-    //     }
-    // }
-    
-    // vga_buffer::print_something();
-    
-    // use core::fmt::Write;
-    // vga_buffer::WRITER.lock().write_str("HELLO RUHUANG").unwrap();
-    // write!(vga_buffer::WRITER.lock(), ",some numbers: {} {}", 42, 12.42).unwrap();
-
-    println!("Hello World{}", "!");
-    #[cfg(test)]
-    test_main();
-    loop{}
-
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
