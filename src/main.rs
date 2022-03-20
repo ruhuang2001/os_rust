@@ -43,8 +43,11 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("It did not crash");
-    loop{}
-
+    // loop{
+    //     use os_rust::print;
+    //     print!("-");
+    // }
+    os_rust::hlt_loop();
 }
 
 #[cfg(test)]
@@ -94,5 +97,5 @@ fn panic(_info: &PanicInfo) -> ! {
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     println!("{}",_info);
-    loop {}
+    os_rust::hlt_loop();
 }
