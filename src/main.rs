@@ -4,11 +4,14 @@
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 use core::panic::PanicInfo;
+use bootloader::{BootInfo, entry_point};
 mod vga_buffer;
 mod serial;
 
+entry_point!(kernel_main);
+
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
     // let vga_buffer = 0xb8000 as *mut u8;
 
     // for (i, &byte) in HELLO.iter().enumerate() {
