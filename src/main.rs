@@ -13,52 +13,31 @@ entry_point!(kernel_main);
 
 #[no_mangle]
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    // let vga_buffer = 0xb8000 as *mut u8;
-
-    // for (i, &byte) in HELLO.iter().enumerate() {
-    //     unsafe {
-    //         *vga_buffer.offset(i as isize * 2) = byte;
-    //         *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-    //     }
-    // }
-    
-    // vga_buffer::print_something();
-    
-    // use core::fmt::Write;
-    // vga_buffer::WRITER.lock().write_str("HELLO RUHUANG").unwrap();
-    // write!(vga_buffer::WRITER.lock(), ",some numbers: {} {}", 42, 12.42).unwrap();
+    // TODO
     use os_rust::memory::active_level_4_table;
-    use x86_64::VirtAddr;
+    use x86_64::{structures::paging::Translate, VirtAddr};
+    use os_rust::memory::translate_addr;
+    use os_rust::memory;
+
 
     println!("Hello World{}", "!");
     os_rust::init();
 
-    // x86_64::instructions::interrupts::int3();
-    
-    // unsafe {
-    //     *(0xdeadbeef as *mut u64) = 42;
-    // };
-    
-    // fn stack_overflow() {
-    //     stack_overflow();
-    // }
-
-    // stack_overflow();
-
-    // let ptr = 0x2031b2 as *mut u32;
-    
-    // // read from a code page
-    // unsafe { let x = *ptr; }
-    // println!("read worked");
-
-    // unsafe { *ptr = 42; }
-    // println!("write worked");
-
-
-    // let (level_4_page_table, _) = Cr3::read();
-    // println!("Level 4 page table at {:?}", level_4_page_table.start_address());
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mapper = unsafe { memory::init(phys_mem_offset) };
+    let addresses = [
+        0xb8000,
+        0x201008,
+        0x0100_0020_1a10,
+        boot_info.physical_memory_offset,
+    ];
+
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        let phys = mapper.translate_addr(virt);
+        println!("{:?} -> {:?}", virt, phys);
+    }
     let l4_table = unsafe {
         active_level_4_table(phys_mem_offset)
     };  
