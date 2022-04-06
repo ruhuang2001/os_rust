@@ -34,3 +34,6 @@ harness = false
 [[test]]
 name = "stack_overflow"
 harness = false
+
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]

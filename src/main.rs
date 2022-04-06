@@ -4,6 +4,8 @@
 #![test_runner(os_rust::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+extern crate alloc;
+use alloc::boxed::Box;
 use core::panic::PanicInfo;
 use bootloader::{BootInfo, entry_point};
 use os_rust::println;
@@ -24,7 +26,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
-    
+    let x = Box::new(41);
     let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
     memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
     
